@@ -19,6 +19,22 @@ def deps do
 end
 ```
 
+## Configuration
+
+Please include the following configuration in your config files:
+
+```
+config :idq_auth,
+  endpoint: "https://taas.idquanta.com/idqoauth/api/v1/",
+  callback_url: "CALLBACK_URL",
+  client_id: "KEY",
+  client_secret: "SECRET"
+```
+
+`callback_url`, `client_id`, and `client_secret` are all available through your idQ®
+application management backend.
+
+
 ## Docs
 
 `mix docs`
