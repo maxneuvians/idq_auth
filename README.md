@@ -1,0 +1,41 @@
+# idQ Auth
+
+A collection of modules that allows an application to complete the various OAuth 2.0 based authentication authentication flows offered by idQ® TaaS Authentication from inBay Technologies Inc. (https://inbaytech.com/)
+
+Available authentication methods include:
+
+* `IdqAuth.Explicit` and `IdqAuth.Plug` - Explicit Authentication (requires `Plug` and `Plug.Session`)
+* `IdqAuth.Implicit` - Implicit Authentication
+* `IdqAuth.Delegated` - Implicit Delegated Authentication (Push notifications)
+
+Please review the documentation for each module to understand how to best use them in your application.
+
+## Installation
+Add `nio_google_authenticator` to your list of dependencies in `mix.exs`:
+
+```
+def deps do
+  [{:idq_auth, "github: maxneuvians/idq_auth}]
+end
+```
+
+## Docs
+
+`mix docs`
+
+## Test and style
+
+`mix test`
+
+`mix dialyxir`
+
+`mix credo`
+
+### Version
+0.1.0
+
+License
+----
+MIT
+
+idQ® is a registered trademark owned by inBay Technologies Inc.
