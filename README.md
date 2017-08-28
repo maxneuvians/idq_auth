@@ -11,7 +11,7 @@ Available authentication methods include:
 Please review the documentation for each module to understand how to best use them in your application.
 
 ## Installation
-Add `nio_google_authenticator` to your list of dependencies in `mix.exs`:
+Add `idq_auth` to your list of dependencies in `mix.exs`:
 
 ```
 def deps do
