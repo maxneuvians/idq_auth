@@ -44,10 +44,10 @@ defmodule IdqAuth.Mixfile do
 
   defp description do
     """
-    NioGoogleAuthenticator is a collection of Elixir convenience functions
-    to generate secrets and validate tokens used in conjunction with Google
-    Authenticator. It also includes functions that automatically add a secret to
-    an Ecto.Changeset.
+    A collection of modules that allows an application to complete
+    the various OAuth 2.0 based authentication authentication flows
+    offered by idQ® TaaS Authentication from inBay Technologies Inc.
+    (https://inbaytech.com/)
     """
   end
 
