@@ -20,7 +20,7 @@ defmodule IdqAuth do
     [:endpoint, :callback_url, :client_id, :client_secret]
     |> Enum.filter(&(Application.get_env(:idq_auth, &1) == nil))
     |> Enum.map(fn key ->
-      Logger.error("idQ Auth Plug: #{key} configuration key is missing")
+      Logger.error("idQ Auth: #{key} configuration key is missing")
       key
     end)
   end
