@@ -15,7 +15,7 @@ Add `idq_auth` to your list of dependencies in `mix.exs`:
 
 ```
 def deps do
-  [{:idq_auth, "github: maxneuvians/idq_auth}]
+  [{:idq_auth, "github: maxneuvians/idq_auth"}]
 end
 ```
 
