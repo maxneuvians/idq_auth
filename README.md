@@ -1,5 +1,7 @@
 # idQ Auth
 
+[![Master](https://travis-ci.org/maxneuvians/idq_auth.svg?branch=master)](https://travis-ci.org/maxneuvians/idq_auth)
+
 A collection of modules that allows an application to complete the various OAuth 2.0 based authentication authentication flows offered by idQ® TaaS Authentication from inBay Technologies Inc. (https://inbaytech.com/)
 
 Available authentication methods include:
