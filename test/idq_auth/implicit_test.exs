@@ -17,10 +17,9 @@ defmodule IdqAuth.ImplicitTest do
     setup [:expected_responses]
 
     test "returns a tuple with :ok atom, challenge, pid, and genserver name" do
-      {:ok, challenge, pid, name} = start_challenge(false)
+      {:ok, challenge, pid} = start_challenge(&callback/1, false)
       assert is_binary(challenge)
       assert is_pid(pid)
-      assert is_binary(name)
     end
   end
 
@@ -28,8 +27,31 @@ defmodule IdqAuth.ImplicitTest do
     setup [:unexpected_responses]
 
     test "returns a error tuple with message" do
-      assert {:error, "Could not get session from auth endpoint"} = start_challenge(false)
+      assert {:error, "Could not get session from auth endpoint"} = start_challenge(&callback/1, false)
     end
+  end
+
+  describe "expected result/1" do
+    setup [:expected_responses]
+
+    test "returns a map with details of the user" do
+      {:ok, challenge, pid} = start_challenge(&callback/1, false)
+      assert is_binary(challenge)
+      assert is_map(result(pid))
+      assert result(pid) == %{"email" => "EMAIL"}
+    end
+  end
+
+  describe "unexpected result/1" do
+    setup [:unexpected_responses]
+
+    test "returns an error message" do
+      assert {:error, "Could not get session from auth endpoint"} = start_challenge(&callback/1, false)
+    end
+  end
+
+  defp callback(_result) do
+    true
   end
 
   defp expected_responses(_context) do

@@ -20,34 +20,23 @@ defmodule IdqAuth.Implicit.Observer do
   # Public API
 
   @doc """
-  Returns the result field of the `GenServer`'s state.
-  Expects the global ID of a specific `GenServer` to query.
-  """
-  @spec result(String.t) :: {integer | map()}
-  def result(id) do
-    GenServer.call({:global, id}, :result)
-  end
-
-  @doc """
   Starts a new GenServer to monitor if implicit
   authorization has been completed. Returns
-  {:ok, pid, id} where:
+  {:ok, pid} where:
 
   * `pid` - The PID of the GenServer process
-  * `id`  - Global ID of the GenServer so you can query the result
   """
-  @spec start(String.t) :: {:ok, pid(), String.t}
-  def start(session) do
-    id = "challenge-#{session}"
-    {:ok, pid} = GenServer.start_link(
+  @spec start(String.t, function, any()) :: {:ok, pid()}
+  def start(session, callback, context) do
+    GenServer.start_link(
       __MODULE__,
       %{
         session: session,
         ttl: 20_000,
-        result: 0
-      },
-      name: {:global, id})
-    {:ok, pid, id}
+        result: 0,
+        callback: callback,
+        context: context
+      })
   end
 
   # Private API
@@ -71,6 +60,13 @@ defmodule IdqAuth.Implicit.Observer do
       |> Api.token()
       |> Map.get("access_token")
       |> Api.user()
+
+      if is_function(state[:callback], 1) do
+        state[:callback].(result)
+      else
+        state[:callback].(result, state[:context])
+      end
+
       {:noreply, Map.put(state, :result, result)}
     else
       _ -> {:noreply, state}

@@ -1,11 +1,18 @@
 defmodule IdqAuth.Delegated.Observer do
   @moduledoc """
   `GenServer` used in delegated authorization. Takes a `push_id`,
-  `push_session`, `push_token`, and `expires_in` to
-  queries the idQ® servers every 2 seconds to see if delegated
-  authorization has been completed. Registers the `GenServer` with
-  a global id that can be used to query the result of the implicit
-  authorization using the `result/1` function.
+  `push_session`, `push_token`, `expires_in`, and a `callback` function
+  to queries the idQ® servers every 2 seconds to see if delegated
+  authorization has been completed.
+
+  The GenServer will also execute a passed `callback` funciton with the
+  result as the single argument if the callback is of arity `/1`. If a `callback`
+  function with arity `/2` is passed then the second argument is the optional
+  `context` argument
+
+  Returns the `GenServer`'s pid so a developer can query the
+  result using `GenServer.call(pid, :result)`. Once the result is retrieved
+  calls the passed `callback` function with the result.
 
   The `GenServer` will terminate itself after `expires_in` seconds as
   that is the timeout for an delegated authorization challenge.
@@ -19,35 +26,31 @@ defmodule IdqAuth.Delegated.Observer do
   # Public API
 
   @doc """
-  Returns the result field of the `GenServer`'s state.
-  Expects the global ID of a specific `GenServer` to query.
-  """
-  @spec result(String.t) :: {integer | map()}
-  def result(id) do
-    GenServer.call({:global, id}, :result)
-  end
-
-  @doc """
   Starts a new GenServer to monitor if delegated
-  authorization has been completed. Returns
-  {:ok, pid, id} where:
+  authorization has been completed.
+
+  Takes the following arguments:
+
+  * `session`  - The session that is being monitored
+  * `callback` - A callback function that takes one argument once GenServer gets the result
+  * `context`  - If your callback is of arity `/2` then the context will be passed as the second argument
+
+  Returns {:ok, pid} where:
 
   * `pid` - The PID of the GenServer process
-  * `id`  - Global ID of the GenServer so you can query the result
   """
-  @spec start(String.t, String.t, String.t, integer) :: {:ok, pid(), String.t}
-  def start(push_id, push_session, push_token, expires_in) do
-    id = "push-#{push_id}"
-    {:ok, pid} = GenServer.start_link(
+  @spec start(String.t, String.t, integer, function(), any()) :: {:ok, pid()}
+  def start(push_session, push_token, expires_in, callback, context) do
+    GenServer.start_link(
       __MODULE__,
       %{
         push_session: push_session,
         push_token: push_token,
         ttl: expires_in * 1_000,
-        result: 0
-      },
-      name: {:global, id})
-    {:ok, pid, id}
+        result: 0,
+        callback: callback,
+        context: context
+      })
   end
 
   # Private API
@@ -71,6 +74,13 @@ defmodule IdqAuth.Delegated.Observer do
       |> Api.token()
       |> Map.get("access_token")
       |> Api.user()
+
+      if is_function(state[:callback], 1) do
+        state[:callback].(result)
+      else
+        state[:callback].(result, state[:context])
+      end
+
       {:noreply, Map.put(state, :result, result)}
     else
       2 -> {:noreply, Map.put(state, :result, 2)}

@@ -8,9 +8,8 @@ defmodule IdqAuth.DelegatedTest do
     setup [:expected_responses]
 
     test "returns a tuple with :ok, pid, and genserver name" do
-      {:ok, pid, name} = push("target", "title", "message", "id")
+      {:ok, pid} = push("target", "title", "message", &callback/1)
       assert is_pid(pid)
-      assert is_binary(name)
     end
   end
 
@@ -18,8 +17,30 @@ defmodule IdqAuth.DelegatedTest do
     setup [:unexpected_responses]
 
     test "returns a error tuple with message" do
-      assert {:error, "Could not get push_token"} = push("target", "title", "message", "id")
+      assert {:error, "Could not get push_token"} = push("target", "title", "message", &callback/1)
     end
+  end
+
+  describe "expected result/1" do
+    setup [:expected_responses]
+
+    test "returns a map with details of the user" do
+      {:ok, pid} = push("target", "title", "message",&callback/1)
+      assert is_map(result(pid))
+      assert result(pid) == %{"email" => "EMAIL"}
+    end
+  end
+
+  describe "unexpected result/1" do
+    setup [:unexpected_responses]
+
+    test "returns an error message" do
+      assert {:error, "Could not get push_token"} = push("target", "title", "message", &callback/1)
+    end
+  end
+
+  defp callback(_result) do
+    true
   end
 
   defp expected_responses(_context) do
