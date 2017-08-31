@@ -14,7 +14,11 @@ Please review the documentation for each module to understand how to best use th
 
 ## Demo
 
-You can view a demo in a phoenix application here: [https://idq-auth-demo.herokuapp.com/](https://idq-auth-demo.herokuapp.com/)
+You can view a demo in a phoenix application here:
+[https://idq-auth-demo.herokuapp.com/](https://idq-auth-demo.herokuapp.com/)
+
+The source code can be found here:
+[https://github.com/maxneuvians/idq_auth_demo](https://github.com/maxneuvians/idq_auth_demo)
 
 
 ## Installation
