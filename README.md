@@ -12,6 +12,11 @@ Available authentication methods include:
 
 Please review the documentation for each module to understand how to best use them in your application.
 
+## Demo
+
+You can view a demo in a phoenix application here: [https://idq-auth-demo.herokuapp.com/](https://idq-auth-demo.herokuapp.com/)
+
+
 ## Installation
 Add `idq_auth` to your list of dependencies in `mix.exs`:
 
